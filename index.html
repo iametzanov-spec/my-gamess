@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Imran Games</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: white;
+    background:
+        radial-gradient(circle at 10% 20%, #ff00cc 0%, transparent 25%),
+        radial-gradient(circle at 90% 10%, #00eaff 0%, transparent 25%),
+        radial-gradient(circle at 50% 100%, #7200ff 0%, transparent 35%),
+        linear-gradient(135deg, #09001c, #12002e, #001b35);
+    overflow-x: hidden;
+}
+
+/* ===== HEADER ===== */
+
+header {
+    text-align: center;
+    padding: 45px 15px 25px;
+}
+
+.logo {
+    font-size: clamp(35px, 8vw, 70px);
+    font-weight: 900;
+    background: linear-gradient(
+        90deg,
+        #ff00cc,
+        #ffea00,
+        #00ffcc,
+        #00aaff,
+        #ff00cc
+    );
+    background-size: 300%;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: rainbow 5s linear infinite;
+}
+
+@keyframes rainbow {
+    0% { background-position: 0%; }
+    100% { background-position: 300%; }
+}
+
+.subtitle {
+    margin-top: 10px;
+    color: #d8d8ff;
+    font-size: 18px;
+}
+
+/* ===== GAME MENU ===== */
+
+.games {
+    max-width: 1100px;
+    margin: 25px auto;
+    padding: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+.game-btn {
+    border: none;
+    padding: 16px 28px;
+    border-radius: 18px;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ff00cc, #7200ff);
+    box-shadow: 0 0 20px rgba(255,0,204,.35);
+    transition: .25s;
+}
+
+.game-btn:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 0 30px rgba(0,238,255,.7);
+}
+
+.game-btn.active {
+    background: linear-gradient(135deg, #00eaff, #0066ff);
+}
+
+/* ===== GAME WINDOW ===== */
+
+.game-container {
+    width: min(95%, 850px);
+    margin: 20px auto 50px;
+    padding: 25px;
+    border-radius: 30px;
+
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.18);
+    backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 0 50px rgba(0,0,0,.35),
+        inset 0 0 30px rgba(255,255,255,.03);
+}
+
+.game {
+    display: none;
+    text-align: center;
+}
+
+.game.active {
+    display: block;
+}
+
+.game h2 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.description {
+    color: #c9c9e8;
+    margin-bottom: 20px;
+}
+
+/* ===== CANVAS ===== */
+
+canvas {
+    display: block;
+    width: min(100%, 500px);
+    height: auto;
+    margin: auto;
+
+    border-radius: 20px;
+    background: #080818;
+
+    box-shadow:
+        0 0 25px rgba(0,238,255,.25),
+        0 0 50px rgba(255,0,204,.15);
+}
+
+/* ===== BUTTON ===== */
+
+.restart {
+    margin-top: 18px;
+    border: none;
+    border-radius: 14px;
+    padding: 13px 25px;
+    background: linear-gradient(135deg, #ff00cc, #ff5500);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.restart:hover {
+    transform: scale(1.05);
+}
+
+/* ===== TIC TAC TOE ===== */
+
+.board {
+    width: min(90vw, 360px);
+    height: min(90vw, 360px);
+    margin: 20px auto;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.cell {
+    border: none;
+    border-radius: 18px;
+
+    font-size: clamp(40px, 12vw, 70px);
+    font-weight: 900;
+    color: white;
+
+    background: rgba(255,255,255,.1);
+    cursor: pointer;
+
+    box-shadow: inset 0 0 15px rgba(255,255,255,.04);
+    transition: .2s;
+}
+
+.cell:hover {
+    background: rgba(0,238,255,.2);
+    transform: scale(.96);
+}
+
+/* ===== CONTROLS ===== */
+
+.controls {
+    margin: 18px auto;
+    display: grid;
+    grid-template-columns: repeat(3, 65px);
+    justify-content: center;
+    gap: 8px;
+}
+
+.controls button {
+    height: 55px;
+    border: none;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.controls button:hover {
+    transform: scale(1.08);
+}
+
+.controls .empty {
+    visibility: hidden;
+}
+
+/* ===== FOOTER ===== */
+
+footer {
+    text-align: center;
+    padding: 45px 15px 35px;
+    background: rgba(0,0,0,.25);
+    border-top: 1px solid rgba(255,255,255,.1);
+}
+
+.footer-name {
+    font-size: 25px;
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+
+.footer-job {
+    color: #c9c9e8;
+    margin-bottom: 15px;
+}
+
+.contacts {
+    line-height: 1.9;
+    color: #e7e7ff;
+}
+
+.love {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #ff6bcb;
+    font-weight: bold;
+}
+
+@media(max-width:600px) {
+    .game-container {
+        padding: 18px 10px;
+        border-radius: 22px;
+    }
+
+    .game h2 {
+        font-size: 25px;
+    }
+
+    .game-btn {
+        width: 100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">🎮 IMRAN GAMES</div>
+
+    <div class="subtitle">
+        Мини-игры от начинающего разработчика
+    </div>
+
+</header>
+
+
+<!-- ===== GAME MENU ===== -->
+
+<div class="games">
+
+    <button class="game-btn active" onclick="showGame('snake', this)">
+        🐍 Змейка
+    </button>
+
+    <button class="game-btn" onclick="showGame('ttt', this)">
+        ❌ Крестики-нолики
+    </button>
+
+    <button class="game-btn" onclick="showGame('cars', this)">
+        🚗 Уворачивайся от машин
+    </button>
+
+</div>
+
+
+<div class="game-container">
+
+
+<!-- ================================================= -->
+<!-- SNAKE -->
+<!-- ================================================= -->
+
+<div id="snake" class="game active">
+
+    <h2>🐍 Змейка</h2>
+
+    <p class="description">
+        Собирай яблоки и становись длиннее!
+    </p>
+
+    <canvas id="snakeCanvas" width="400" height="400"></canvas>
+
+    <div id="snakeScore">
+        Счёт: 0
+    </div>
+
+    <div class="controls">
+
+        <button class="empty"></button>
+
+        <button onclick="snakeDirection('up')">
+            ↑
+        </button>
+
+        <button class="empty"></button>
+
+        <button onclick="snakeDirection('left')">
+            ←
+        </button>
+
+        <button onclick="snakeDirection('down')">
+            ↓
+        </button>
+
+        <button onclick="snakeDirection('right')">
+            →
+        </button>
+
+    </div>
+
+    <button class="restart" onclick="restartSnake()">
+        🔄 Начать заново
+    </button>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- TIC TAC TOE -->
+<!-- ================================================= -->
+
+<div id="ttt" class="game">
+
+    <h2>❌ Крестики-нолики ⭕</h2>
+
+    <p class="description">
+        Ты играешь за ❌ против компьютера
+    </p>
+
+    <div class="board" id="board">
+
+        <button class="cell" onclick="tttMove(0)"></button>
+        <button class="cell" onclick="tttMove(1)"></button>
+        <button class="cell" onclick="tttMove(2)"></button>
+
+        <button class="cell" onclick="tttMove(3)"></button>
+        <button class="cell" onclick="tttMove(4)"></button>
+        <button class="cell" onclick="tttMove(5)"></button>
+
+        <button class="cell" onclick="tttMove(6)"></button>
+        <button class="cell" onclick="tttMove(7)"></button>
+        <button class="cell" onclick="tttMove(8)"></button>
+
+    </div>
+
+    <div id="tttStatus">
+        Твой ход!
+    </div>
+
+    <button class="restart" onclick="restartTTT()">
+        🔄 Новая игра
+    </button>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- CARS -->
+<!-- ================================================= -->
+
+<div id="cars" class="game">
+
+    <h2>🚗 Уворачивайся от машин</h2>
+
+    <p class="description">
+        Двигайся влево и вправо и не попадай под машины!
+    </p>
+
+    <canvas id="carCanvas" width="400" height="600"></canvas>
+
+    <div id="carScore">
+        Счёт: 0
+    </div>
+
+    <div class="controls">
+
+        <button class="empty"></button>
+
+        <button class="empty"></button>
+
+        <button class="empty"></button>
+
+        <button onclick="moveCarPlayer(-1)">
+            ←
+        </button>
+
+        <button onclick="moveCarPlayer(1)">
+            →
+        </button>
+
+        <button class="empty"></button>
+
+    </div>
+
+    <button class="restart" onclick="restartCars()">
+        🔄 Начать заново
+    </button>
+
+</div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- FOOTER -->
+<!-- ================================================= -->
+
+<footer>
+
+    <div class="footer-name">
+        By Ametzhanov Imran
+    </div>
+
+    <div class="footer-job">
+        Начинающий разработчик программного обеспечения
+    </div>
+
+    <div class="contacts">
+
+        📞 Контакты: +7-700-322-08-10
+        <br>
+
+        💬 Телеграм: @onesigxx
+
+    </div>
+
+    <div class="love">
+        ❤️ Сделано с любовью ❤️
+    </div>
+
+</footer>
+
+
+<script>
+
+/* =====================================================
+   GAME SWITCHING
+===================================================== */
+
+function showGame(id, button) {
+
+    document.querySelectorAll(".game")
+        .forEach(game => game.classList.remove("active"));
+
+    document.getElementById(id)
+        .classList.add("active");
+
+    document.querySelectorAll(".game-btn")
+        .forEach(btn => btn.classList.remove("active"));
+
+    button.classList.add("active");
+
+}
+
+
+/* =====================================================
+   SNAKE
+===================================================== */
+
+const snakeCanvas =
+    document.getElementById("snakeCanvas");
+
+const snakeCtx =
+    snakeCanvas.getContext("2d");
+
+let snake;
+let snakeFood;
+let snakeDx;
+let snakeDy;
+let snakeScoreValue;
+let snakeTimer;
+
+function restartSnake() {
+
+    snake = [
+        {x: 10, y: 10},
+        {x: 9, y: 10},
+        {x: 8, y: 10}
+    ];
+
+    snakeDx = 1;
+    snakeDy = 0;
+
+    snakeScoreValue = 0;
+
+    createSnakeFood();
+
+    clearInterval(snakeTimer);
+
+    snakeTimer = setInterval(
+        updateSnake,
+        110
+    );
+
+    drawSnake();
+
+}
+
+
+function createSnakeFood() {
+
+    snakeFood = {
+
+        x: Math.floor(Math.random() * 20),
+
+        y: Math.floor(Math.random() * 20)
+
+    };
+
+}
+
+
+function snakeDirection(direction) {
+
+    if(direction === "up" && snakeDy !== 1) {
+
+        snakeDx = 0;
+        snakeDy = -1;
+
+    }
+
+    if(direction === "down" && snakeDy !== -1) {
+
+        snakeDx = 0;
+        snakeDy = 1;
+
+    }
+
+    if(direction === "left" && snakeDx !== 1) {
+
+        snakeDx = -1;
+        snakeDy = 0;
+
+    }
+
+    if(direction === "right" && snakeDx !== -1) {
+
+        snakeDx = 1;
+        snakeDy = 0;
+
+    }
+
+}
+
+
+document.addEventListener(
+    "keydown",
+    function(e) {
+
+        if(e.key === "ArrowUp")
+            snakeDirection("up");
+
+        if(e.key === "ArrowDown")
+            snakeDirection("down");
+
+        if(e.key === "ArrowLeft")
+            snakeDirection("left");
+
+        if(e.key === "ArrowRight")
+            snakeDirection("right");
+
+    }
+);
+
+
+function updateSnake() {
+
+    const head = {
+
+        x: snake[0].x + snakeDx,
+
+        y: snake[0].y + snakeDy
+
+    };
+
+
+    /* стены */
+
+    if(
+        head.x < 0 ||
+        head.x >= 20 ||
+        head.y < 0 ||
+        head.y >= 20
+    ) {
+
+        alert(
+            "🐍 Игра окончена!\nСчёт: " +
+            snakeScoreValue
+        );
+
+        restartSnake();
+
+        return;
+    }
+
+
+    /* тело */
+
+    for(let part of snake) {
+
+        if(
+            head.x === part.x &&
+            head.y === part.y
+        ) {
+
+            alert(
+                "🐍 Ты врезался!\nСчёт: " +
+                snakeScoreValue
+            );
+
+            restartSnake();
+
+            return;
+        }
+
+    }
+
+
+    snake.unshift(head);
+
+
+    /* яблоко */
+
+    if(
+        head.x === snakeFood.x &&
+        head.y === snakeFood.y
+    ) {
+
+        snakeScoreValue += 10;
+
+        createSnakeFood();
+
+    } else {
+
+        snake.pop();
+
+    }
+
+
+    document.getElementById(
+        "snakeScore"
+    ).textContent =
+        "Счёт: " + snakeScoreValue;
+
+
+    drawSnake();
+
+}
+
+
+function drawSnake() {
+
+    snakeCtx.fillStyle = "#090918";
+
+    snakeCtx.fillRect(
+        0,
+        0,
+        400,
+        400
+    );
+
+
+    /* сетка */
+
+    snakeCtx.strokeStyle =
+        "rgba(255,255,255,.04)";
+
+    for(let i = 0; i <= 400; i += 20) {
+
+        snakeCtx.beginPath();
+
+        snakeCtx.moveTo(i, 0);
+        snakeCtx.lineTo(i, 400);
+
+        snakeCtx.stroke();
+
+        snakeCtx.beginPath();
+
+        snakeCtx.moveTo(0, i);
+        snakeCtx.lineTo(400, i);
+
+        snakeCtx.stroke();
+
+    }
+
+
+    /* яблоко */
+
+    snakeCtx.fillStyle = "#ff2b6d";
+
+    snakeCtx.beginPath();
+
+    snakeCtx.arc(
+        snakeFood.x * 20 + 10,
+        snakeFood.y * 20 + 10,
+        8,
+        0,
+        Math.PI * 2
+    );
+
+    snakeCtx.fill();
+
+
+    /* змейка */
+
+    snake.forEach(
+        (part, index) => {
+
+            snakeCtx.fillStyle =
+                index === 0
+                ? "#00ffcc"
+                : "#00cc88";
+
+            snakeCtx.fillRect(
+                part.x * 20 + 2,
+                part.y * 20 + 2,
+                16,
+                16
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   TIC TAC TOE
+===================================================== */
+
+let tttBoard = [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+];
+
+let tttGameOver = false;
+
+
+function tttMove(index) {
+
+    if(
+        tttBoard[index] !== "" ||
+        tttGameOver
+    ) return;
+
+
+    tttBoard[index] = "❌";
+
+    drawTTT();
+
+
+    if(checkWinner("❌")) {
+
+        document.getElementById(
+            "tttStatus"
+        ).textContent =
+            "🎉 Ты победил!";
+
+        tttGameOver = true;
+
+        return;
+    }
+
+
+    if(tttBoard.every(x => x !== "")) {
+
+        document.getElementById(
+            "tttStatus"
+        ).textContent =
+            "🤝 Ничья!";
+
+        tttGameOver = true;
+
+        return;
+    }
+
+
+    document.getElementById(
+        "tttStatus"
+    ).textContent =
+        "🤖 Ход компьютера...";
+
+
+    setTimeout(computerMove, 450);
+
+}
+
+
+function computerMove() {
+
+    if(tttGameOver) return;
+
+
+    let empty = [];
+
+    for(let i = 0; i < 9; i++) {
+
+        if(tttBoard[i] === "")
+            empty.push(i);
+
+    }
+
+
+    if(empty.length === 0) return;
+
+
+    /* сначала пытаемся выиграть */
+
+    for(let i of empty) {
+
+        tttBoard[i] = "⭕";
+
+        if(checkWinner("⭕")) {
+
+            drawTTT();
+
+            document.getElementById(
+                "tttStatus"
+            ).textContent =
+                "🤖 Компьютер победил!";
+
+            tttGameOver = true;
+
+            return;
+
+        }
+
+        tttBoard[i] = "";
+
+    }
+
+
+    /* блокируем игрока */
+
+    for(let i of empty) {
+
+        tttBoard[i] = "❌";
+
+        if(checkWinner("❌")) {
+
+            tttBoard[i] = "⭕";
+
+            drawTTT();
+
+            document.getElementById(
+                "tttStatus"
+            ).textContent =
+                "Твой ход!";
+
+            return;
+
+        }
+
+        tttBoard[i] = "";
+
+    }
+
+
+    /* центр */
+
+    if(tttBoard[4] === "") {
+
+        tttBoard[4] = "⭕";
+
+    } else {
+
+        let random =
+            empty[
+                Math.floor(
+                    Math.random() *
+                    empty.length
+                )
+            ];
+
+        tttBoard[random] = "⭕";
+
+    }
+
+
+    drawTTT();
+
+
+    if(checkWinner("⭕")) {
+
+        document.getElementById(
+            "tttStatus"
+        ).textContent =
+            "🤖 Компьютер победил!";
+
+        tttGameOver = true;
+
+        return;
+    }
+
+
+    if(tttBoard.every(x => x !== "")) {
+
+        document.getElementById(
+            "tttStatus"
+        ).textContent =
+            "🤝 Ничья!";
+
+        tttGameOver = true;
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "tttStatus"
+    ).textContent =
+        "Твой ход!";
+
+}
+
+
+function checkWinner(player) {
+
+    const wins = [
+
+        [0,1,2],
+        [3,4,5],
+        [6,7,8],
+
+        [0,3,6],
+        [1,4,7],
+        [2,5,8],
+
+        [0,4,8],
+        [2,4,6]
+
+    ];
+
+
+    return wins.some(
+        combo =>
+            combo.every(
+                i => tttBoard[i] === player
+            )
+    );
+
+}
+
+
+function drawTTT() {
+
+    document
+        .querySelectorAll(".cell")
+        .forEach(
+            (cell, index) => {
+
+                cell.textContent =
+                    tttBoard[index];
+
+            }
+        );
+
+}
+
+
+function restartTTT() {
+
+    tttBoard = [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+    ];
+
+    tttGameOver = false;
+
+    drawTTT();
+
+    document.getElementById(
+        "tttStatus"
+    ).textContent =
+        "Твой ход!";
+
+}
+
+
+/* =====================================================
+   CARS
+===================================================== */
+
+const carCanvas =
+    document.getElementById("carCanvas");
+
+const carCtx =
+    carCanvas.getContext("2d");
+
+
+let playerCar;
+let enemyCars;
+let carScoreValue;
+let carRunning;
+let roadSpeed;
+let roadLines;
+let carAnimation;
+
+
+function restartCars() {
+
+    playerCar = {
+
+        x: 175,
+
+        y: 520,
+
+        width: 50,
+
+        height: 75
+
+    };
+
+
+    enemyCars = [];
+
+    carScoreValue = 0;
+
+    roadSpeed = 5;
+
+    roadLines = [
+        0,
+        100,
+        200,
+        300,
+        400,
+        500
+    ];
+
+    carRunning = true;
+
+    document.getElementById(
+        "carScore"
+    ).textContent =
+        "Счёт: 0";
+
+
+    cancelAnimationFrame(carAnimation);
+
+    carGameLoop();
+
+}
+
+
+function moveCarPlayer(direction) {
+
+    if(!carRunning) return;
+
+
+    playerCar.x +=
+        direction * 35;
+
+
+    if(playerCar.x < 15)
+        playerCar.x = 15;
+
+
+    if(
+        playerCar.x >
+        carCanvas.width -
+        playerCar.width -
+        15
+    )
+        playerCar.x =
+            carCanvas.width -
+            playerCar.width -
+            15;
+
+}
+
+
+document.addEventListener(
+    "keydown",
+    function(e) {
+
+        if(
+            e.key === "ArrowLeft" ||
+            e.key.toLowerCase() === "a"
+        )
+            moveCarPlayer(-1);
+
+
+        if(
+            e.key === "ArrowRight" ||
+            e.key.toLowerCase() === "d"
+        )
+            moveCarPlayer(1);
+
+    }
+);
+
+
+function createEnemyCar() {
+
+    const lanes = [
+        50,
+        125,
+        200,
+        275,
+        350
+    ];
+
+
+    enemyCars.push({
+
+        x:
+            lanes[
+                Math.floor(
+                    Math.random() *
+                    lanes.length
+                )
+            ],
+
+        y: -100,
+
+        width: 50,
+
+        height: 75,
+
+        speed:
+            roadSpeed +
+            Math.random() * 3
+
+    });
+
+}
+
+
+function carGameLoop() {
+
+    if(!carRunning) return;
+
+
+    drawCars();
+
+    updateCars();
+
+
+    carAnimation =
+        requestAnimationFrame(
+            carGameLoop
+        );
+
+}
+
+
+let carSpawnTimer = 0;
+
+
+function updateCars() {
+
+    /* дорога */
+
+    roadLines.forEach(
+        (line, index) => {
+
+            roadLines[index] += roadSpeed;
+
+            if(roadLines[index] > 600)
+                roadLines[index] = -50;
+
+        }
+    );
+
+
+    /* машины */
+
+    enemyCars.forEach(
+        car => {
+
+            car.y += car.speed;
+
+        }
+    );
+
+
+    enemyCars =
+        enemyCars.filter(
+            car => car.y < 700
+        );
+
+
+    carSpawnTimer++;
+
+
+    if(carSpawnTimer > 55) {
+
+        createEnemyCar();
+
+        carSpawnTimer = 0;
+
+    }
+
+
+    /* сложность */
+
+    carScoreValue += 0.02;
+
+    roadSpeed =
+        5 + carScoreValue / 50;
+
+
+    document.getElementById(
+        "carScore"
+    ).textContent =
+        "Счёт: " +
+        Math.floor(carScoreValue);
+
+
+    /* столкновение */
+
+    for(let car of enemyCars) {
+
+        if(
+            playerCar.x <
+                car.x + car.width &&
+
+            playerCar.x +
+                playerCar.width >
+                car.x &&
+
+            playerCar.y <
+                car.y + car.height &&
+
+            playerCar.y +
+                playerCar.height >
+                car.y
+        ) {
+
+            carGameOver();
+
+        }
+
+    }
+
+}
+
+
+function drawCars() {
+
+    /* фон */
+
+    carCtx.fillStyle =
+        "#151515";
+
+    carCtx.fillRect(
+        0,
+        0,
+        400,
+        600
+    );
+
+
+    /* обочина */
+
+    carCtx.fillStyle =
+        "#13a34a";
+
+    carCtx.fillRect(
+        0,
+        0,
+        30,
+        600
+    );
+
+    carCtx.fillRect(
+        370,
+        0,
+        30,
+        600
+    );
+
+
+    /* дорога */
+
+    carCtx.fillStyle =
+        "#242424";
+
+    carCtx.fillRect(
+        30,
+        0,
+        340,
+        600
+    );
+
+
+    /* линии */
+
+    carCtx.strokeStyle =
+        "#ffffff";
+
+    carCtx.lineWidth = 5;
+
+
+    roadLines.forEach(
+        y => {
+
+            carCtx.beginPath();
+
+            carCtx.moveTo(
+                165,
+                y
+            );
+
+            carCtx.lineTo(
+                165,
+                y + 55
+            );
+
+            carCtx.stroke();
+
+
+            carCtx.beginPath();
+
+            carCtx.moveTo(
+                235,
+                y
+            );
+
+            carCtx.lineTo(
+                235,
+                y + 55
+            );
+
+            carCtx.stroke();
+
+        }
+    );
+
+
+    /* игрок */
+
+    drawCar(
+        playerCar.x,
+        playerCar.y,
+        "#00eaff"
+    );
+
+
+    /* враги */
+
+    enemyCars.forEach(
+        car => {
+
+            drawCar(
+                car.x,
+                car.y,
+                "#ff1744"
+            );
+
+        }
+    );
+
+}
+
+
+function drawCar(x, y, color) {
+
+    /* корпус */
+
+    carCtx.fillStyle = color;
+
+    carCtx.beginPath();
+
+    carCtx.roundRect(
+        x,
+        y,
+        50,
+        75,
+        12
+    );
+
+    carCtx.fill();
+
+
+    /* стекло */
+
+    carCtx.fillStyle =
+        "#151525";
+
+    carCtx.fillRect(
+        x + 8,
+        y + 12,
+        34,
+        20
+    );
+
+
+    /* фары */
+
+    carCtx.fillStyle =
+        "#fff700";
+
+    carCtx.fillRect(
+        x + 6,
+        y + 4,
+        10,
+        7
+    );
+
+    carCtx.fillRect(
+        x + 34,
+        y + 4,
+        10,
+        7
+    );
+
+
+    /* колёса */
+
+    carCtx.fillStyle =
+        "#050505";
+
+    carCtx.fillRect(
+        x - 5,
+        y + 15,
+        7,
+        20
+    );
+
+    carCtx.fillRect(
+        x + 48,
+        y + 15,
+        7,
+        20
+    );
+
+    carCtx.fillRect(
+        x - 5,
+        y + 48,
+        7,
+        20
+    );
+
+    carCtx.fillRect(
+        x + 48,
+        y + 48,
+        7,
+        20
+    );
+
+}
+
+
+function carGameOver() {
+
+    carRunning = false;
+
+    cancelAnimationFrame(
+        carAnimation
+    );
+
+
+    setTimeout(
+        () => {
+
+            alert(
+                "💥 АВАРИЯ!\n\nТвой счёт: " +
+                Math.floor(carScoreValue)
+            );
+
+        },
+        100
+    );
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+restartSnake();
+
+restartTTT();
+
+restartCars();
+
+</script>
+
+</body>
+</html>
